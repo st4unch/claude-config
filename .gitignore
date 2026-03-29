@@ -1,0 +1,37 @@
+# Ignore everything by default
+*
+
+# Track config files
+!.gitignore
+!CLAUDE.md
+!settings.json
+!keybindings.json
+
+# Track hooks
+!hooks/
+!hooks/**
+
+# Track skills
+!skills/
+!skills/**
+
+# Track project memory files (learned preferences, feedback, notes)
+!projects/
+!projects/*/
+!projects/*/memory/
+!projects/*/memory/**
+
+# Ignore session transcripts inside projects
+projects/*/*.jsonl
+projects/*/tool-results/
+
+# Sensitive files - NEVER track
+**/reference_*credentials*.md
+**/reference_*secret*.md
+**/reference_*token*.md
+**/reference_*password*.md
+
+# Machine-specific - do NOT track
+settings.local.json
+settings.json_zai
+remote-settings.json
