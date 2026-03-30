@@ -37,6 +37,17 @@
           }
         ]
       }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/telegram-notify.sh",
+            "statusMessage": "Telegram bildirimi gonderiliyor..."
+          }
+        ]
+      }
     ]
   },
   "enabledPlugins": {
@@ -44,10 +55,8 @@
     "superpowers@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
     "playwright@claude-plugins-official": true,
-    "supabase@claude-plugins-official": true,
-    "swift-lsp@claude-plugins-official": true,
-    "github@claude-plugins-official": true,
-    "figma@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "coderabbit@claude-plugins-official": true,
     "telegram@claude-plugins-official": true
   },
   "effortLevel": "high",
