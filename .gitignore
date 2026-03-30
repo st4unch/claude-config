@@ -17,6 +17,10 @@
 !hooks/
 !hooks/**
 
+# Track scripts
+!scripts/
+!scripts/**
+
 # Track skills
 !skills/
 !skills/**

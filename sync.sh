@@ -29,6 +29,8 @@ SHARED_FILES=(
     "CLAUDE.md:CLAUDE.md"
     "hooks/rm-guard.sh:hooks/rm-guard.sh"
     "hooks/sandbox-guard.sh:hooks/sandbox-guard.sh"
+    "scripts/telegram-notify.sh:scripts/telegram-notify.sh"
+    "scripts/telegram-approval.py:scripts/telegram-approval.py"
     "skills/frontend-design/SKILL.md:skills/frontend-design/SKILL.md"
     "commands/switch-provider.sh:switch-provider.sh"
 )
