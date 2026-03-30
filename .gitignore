@@ -3,9 +3,15 @@
 
 # Track config files
 !.gitignore
+!README.md
 !CLAUDE.md
 !settings.json
 !keybindings.json
+!sync.sh
+
+# Track commands (switch, etc.)
+!commands/
+!commands/**
 
 # Track hooks
 !hooks/
