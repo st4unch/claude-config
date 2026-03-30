@@ -11,6 +11,17 @@ ask() {
   exit 0
 }
 
+PARENT_TASKS=$(python3 -c "import os.path; print(os.path.normpath('$ALLOWED_DIR/../tasks'))" 2>/dev/null)
+
+ALWAYS_ALLOWED=(
+  "/tmp"
+  "/private/tmp"
+  "/var/folders"
+  "$HOME/tasks"
+  "$HOME/.claude/tasks"
+  "$PARENT_TASKS"
+)
+
 check_path() {
   local p="$1"
   [ -z "$p" ] || [ "$p" = "null" ] && return 0
@@ -19,6 +30,10 @@ check_path() {
   [ -z "$resolved" ] && resolved="$p"
   [ "$resolved" = "$ALLOWED_DIR" ] && return 0
   [[ "$resolved" == "$ALLOWED_DIR/"* ]] && return 0
+  for allowed in "${ALWAYS_ALLOWED[@]}"; do
+    [ "$resolved" = "$allowed" ] && return 0
+    [[ "$resolved" == "$allowed/"* ]] && return 0
+  done
   return 1
 }
 
