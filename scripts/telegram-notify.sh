@@ -9,7 +9,8 @@ if [[ ! -f "$ENV_FILE" ]]; then
 fi
 source "$ENV_FILE"
 
-CHAT_ID="REDACTED_CHAT_ID"
+CHAT_ID="${TELEGRAM_CHAT_ID:-}"
+[[ -z "$CHAT_ID" ]] && exit 0
 
 # Read hook input from stdin
 INPUT=$(cat)

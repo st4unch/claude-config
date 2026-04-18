@@ -25,17 +25,15 @@
 !skills/
 !skills/**
 
-# Track project memory files (learned preferences, feedback, notes)
-!projects/
-!projects/*/
-!projects/*/memory/
-!projects/*/memory/**
+# Explicit denies (belt-and-suspenders — never leak via sync)
+projects/
+tasks/
+channels/
+approvals/
+.env
+.env.*
 
-# Ignore session transcripts inside projects
-projects/*/*.jsonl
-projects/*/tool-results/
-
-# Sensitive files - NEVER track
+# Sensitive file patterns (defense in depth)
 **/reference_*credentials*.md
 **/reference_*secret*.md
 **/reference_*token*.md
@@ -45,3 +43,4 @@ projects/*/tool-results/
 settings.local.json
 settings.json_zai
 remote-settings.json
+*.local.json

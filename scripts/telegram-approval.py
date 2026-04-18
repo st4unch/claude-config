@@ -15,7 +15,6 @@ import urllib.error
 
 # --- Config ---
 APPROVAL_TIMEOUT = int(os.environ.get("TELEGRAM_APPROVAL_TIMEOUT", "120"))
-CHAT_ID = "REDACTED_CHAT_ID"
 ENV_FILE = os.path.expanduser("~/.claude/channels/telegram/.env")
 APPROVALS_DIR = os.path.expanduser("~/.claude/approvals")
 
@@ -25,12 +24,36 @@ def load_bot_token():
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     if token:
         return token
-    with open(ENV_FILE) as f:
-        for line in f:
-            line = line.strip()
-            if line.startswith("TELEGRAM_BOT_TOKEN="):
-                return line.split("=", 1)[1].strip()
+    try:
+        with open(ENV_FILE) as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith("TELEGRAM_BOT_TOKEN="):
+                    return line.split("=", 1)[1].strip()
+    except FileNotFoundError:
+        pass
     return None
+
+
+def load_chat_id():
+    """Load chat ID from env or .env file."""
+    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+    if chat_id:
+        return chat_id
+    try:
+        with open(ENV_FILE) as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith("TELEGRAM_CHAT_ID="):
+                    return line.split("=", 1)[1].strip()
+    except FileNotFoundError:
+        pass
+    return None
+
+
+CHAT_ID = load_chat_id()
+if not CHAT_ID:
+    sys.exit(0)
 
 
 def telegram_api(method, payload=None):

@@ -32,6 +32,8 @@ SHARED_FILES=(
     "scripts/telegram-notify.sh:scripts/telegram-notify.sh"
     "scripts/telegram-approval.py:scripts/telegram-approval.py"
     "skills/frontend-design/SKILL.md:skills/frontend-design/SKILL.md"
+    "skills/project-auditor/SKILL.md:skills/project-auditor/SKILL.md"
+    "skills/project-architect/SKILL.md:skills/project-architect/SKILL.md"
     "commands/switch-provider.sh:switch-provider.sh"
 )
 
@@ -202,6 +204,13 @@ do_push() {
             ok "zai-provider template guncellendi (token gizlendi)"
             ((changed++)) || true
         }
+    fi
+
+    # Defense-in-depth: projects/ staging'e sizmamali (SHARED_FILES'da yok ama paranoia)
+    if [[ -d "$REPO_DIR/projects" ]] && [[ -n "$(ls -A "$REPO_DIR/projects" 2>/dev/null)" ]]; then
+        error "KRITIK: $REPO_DIR/projects/ icerik barindiriyor — push iptal."
+        error "projects/ asla staging'e girmemeli. Temizle: rm -rf $REPO_DIR/projects"
+        return 1
     fi
 
     echo ""
