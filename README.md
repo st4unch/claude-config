@@ -28,7 +28,9 @@ claude-config/
 │   ├── rm-guard.sh                  # rm -rf koruma hooku
 │   └── sandbox-guard.sh             # Dizin erisim sinirlama hooku
 ├── skills/
-│   └── frontend-design/SKILL.md     # Frontend tasarim skill'i
+│   ├── frontend-design/SKILL.md     # Frontend tasarim skill'i
+│   ├── project-auditor/SKILL.md     # Mevcut proje audit — read-only, /tasks/ altina task uretir
+│   └── project-architect/SKILL.md   # Yeni proje mimari planlama — ADR + scaffold tasks uretir
 ├── settings.json                    # ORNEK ONLY — makineye ozel, sync edilmez
 └── projects/                        # ORNEK ONLY — makineye ozel, sync edilmez
 ```
