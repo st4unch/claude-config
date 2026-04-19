@@ -79,6 +79,8 @@ do_pull() {
     mkdir -p "$CLAUDE_DIR/commands"
     mkdir -p "$CLAUDE_DIR/scripts"
     mkdir -p "$CLAUDE_DIR/skills/frontend-design"
+    mkdir -p "$CLAUDE_DIR/skills/project-auditor"
+    mkdir -p "$CLAUDE_DIR/skills/project-architect"
 
     local changed=0
     local skipped=0
