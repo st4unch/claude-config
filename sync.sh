@@ -4,14 +4,13 @@
 #   ./sync.sh pull          — Download shared files from repo to ~/.claude/
 #   ./sync.sh push          — Upload local shared files to repo
 #   ./sync.sh diff          — Show differences between local and repo
-#   ./sync.sh setup         — First-time setup (clone repo + pull + install switch)
+#   ./sync.sh setup         — First-time setup (clone repo + pull)
 set -euo pipefail
 
 REPO_URL="git@github.com:st4unch/claude-config.git"
 REPO_NAME="claude-config"
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 CLAUDE_DIR="$HOME/.claude"
-LOCAL_BIN="$HOME/.local/bin"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -39,33 +38,7 @@ SHARED_FILES=(
     "skills/frontend-design/SKILL.md:skills/frontend-design/SKILL.md"
     "skills/project-auditor/SKILL.md:skills/project-auditor/SKILL.md"
     "skills/project-architect/SKILL.md:skills/project-architect/SKILL.md"
-    "commands/switch-provider.sh:switch-provider.sh"
 )
-
-# ─── Ask for secret if needed ─────────────────────────────────────────
-ask_token() {
-    local key="$1"
-    local desc="$2"
-    local target="$3"
-
-    if grep -q "YOUR_.*_HERE" "$target" 2>/dev/null; then
-        echo ""
-        echo -e "${YELLOW}$desc${NC}"
-        echo -n "Token degerini girin: "
-        read -r token_value
-        if [ -n "$token_value" ]; then
-            # Use sed for simple replacement (portable)
-            if [[ "$(uname)" == "Darwin" ]]; then
-                sed -i '' "s|YOUR_${key}_HERE|${token_value}|g" "$target"
-            else
-                sed -i "s|YOUR_${key}_HERE|${token_value}|g" "$target"
-            fi
-            ok "Token kaydedildi."
-        else
-            warn "Token bos birakildi — daha sonra manuel olarak $target dosyasini duzenleyin."
-        fi
-    fi
-}
 
 # ─── Setup command ─────────────────────────────────────────────────────
 do_setup() {
@@ -90,16 +63,10 @@ do_setup() {
     info "Dosyalar indiriliyor..."
     REPO_DIR="$CLAUDE_DIR/$REPO_NAME" do_pull
 
-    # Handle zai-provider token
-    if [ -f "$CLAUDE_DIR/zai-provider.json" ]; then
-        ask_token "ZAI_TOKEN" "z.ai API token gerekiyor." "$CLAUDE_DIR/zai-provider.json"
-    fi
-
     echo ""
     ok "Kurulum tamamlandi!"
     echo ""
     info "Kullanim:"
-    echo "  switch          — Provider degistir (z.ai <-> Claude)"
     echo "  cd ~/.claude/claude-config && ./sync.sh pull   — Dosyalari guncelle"
     echo "  cd ~/.claude/claude-config && ./sync.sh push   — Dosyalari repoyla paylas"
 }
@@ -110,8 +77,8 @@ do_pull() {
 
     mkdir -p "$CLAUDE_DIR/hooks"
     mkdir -p "$CLAUDE_DIR/commands"
+    mkdir -p "$CLAUDE_DIR/scripts"
     mkdir -p "$CLAUDE_DIR/skills/frontend-design"
-    mkdir -p "$LOCAL_BIN"
 
     local changed=0
     local skipped=0
@@ -121,11 +88,7 @@ do_pull() {
         local_path="${entry##*:}"
 
         src="$REPO_DIR/$repo_path"
-        if [[ "$local_path" == "switch-provider.sh" ]]; then
-            dst="$LOCAL_BIN/switch"
-        else
-            dst="$CLAUDE_DIR/$local_path"
-        fi
+        dst="$CLAUDE_DIR/$local_path"
 
         if [ ! -f "$src" ]; then
             warn "Repo dosyasi eksik: $repo_path — atlandi"
@@ -148,18 +111,6 @@ do_pull() {
         ((changed++)) || true
     done
 
-    # Handle zai-provider.json template
-    if [ -f "$REPO_DIR/commands/zai-provider.template.json" ]; then
-        if [ ! -f "$CLAUDE_DIR/zai-provider.json" ]; then
-            info "zai-provider.json olusturuluyor (template'den)..."
-            cp "$REPO_DIR/commands/zai-provider.template.json" "$CLAUDE_DIR/zai-provider.json"
-            ask_token "ZAI_TOKEN" "z.ai API token gerekiyor." "$CLAUDE_DIR/zai-provider.json"
-            ((changed++)) || true
-        else
-            echo "  zai-provider.json — zaten mevcut, uzerine yazilmadi"
-        fi
-    fi
-
     echo ""
     if [ "$changed" -gt 0 ]; then
         ok "$changed dosya guncellendi. $skipped atlandi."
@@ -179,11 +130,7 @@ do_push() {
         local_path="${entry##*:}"
 
         dst="$REPO_DIR/$repo_path"
-        if [[ "$local_path" == "switch-provider.sh" ]]; then
-            src="$LOCAL_BIN/switch"
-        else
-            src="$CLAUDE_DIR/$local_path"
-        fi
+        src="$CLAUDE_DIR/$local_path"
 
         if [ ! -f "$src" ]; then
             warn "Local dosya eksik: $local_path — atlandi"
@@ -201,16 +148,6 @@ do_push() {
         ok "Repo guncellendi: $repo_path"
         ((changed++)) || true
     done
-
-    # Push zai-provider template (strip secrets)
-    if [ -f "$CLAUDE_DIR/zai-provider.json" ]; then
-        template="$REPO_DIR/commands/zai-provider.template.json"
-        jq '.env | .ANTHROPIC_AUTH_TOKEN = "YOUR_ZAI_TOKEN_HERE"' \
-            "$CLAUDE_DIR/zai-provider.json" > "$template" 2>/dev/null && {
-            ok "zai-provider template guncellendi (token gizlendi)"
-            ((changed++)) || true
-        }
-    fi
 
     # Defense-in-depth: projects/ staging'e sizmamali (SHARED_FILES'da yok ama paranoia)
     if [[ -d "$REPO_DIR/projects" ]] && [[ -n "$(ls -A "$REPO_DIR/projects" 2>/dev/null)" ]]; then
@@ -237,11 +174,7 @@ do_diff() {
         local_path="${entry##*:}"
 
         src="$REPO_DIR/$repo_path"
-        if [[ "$local_path" == "switch-provider.sh" ]]; then
-            dst="$LOCAL_BIN/switch"
-        else
-            dst="$CLAUDE_DIR/$local_path"
-        fi
+        dst="$CLAUDE_DIR/$local_path"
 
         if [ ! -f "$src" ] || [ ! -f "$dst" ]; then
             echo -e "  ${YELLOW}EKSIK${NC}    $local_path"
@@ -270,7 +203,7 @@ case "${1:-help}" in
         echo "Kullanim: $0 <komut>"
         echo ""
         echo "Komutlar:"
-        echo "  setup  Ilk kurulum (repo klonla + dosyalari indir + token sor)"
+        echo "  setup  Ilk kurulum (repo klonla + dosyalari indir)"
         echo "  pull   Repodaki dosyalari ~/.claude/ dizinine indir"
         echo "  push   Local dosyalari repoya yukle"
         echo "  diff   Local ve repo arasindaki farklari goster"
@@ -282,7 +215,6 @@ case "${1:-help}" in
         echo ""
         echo "Paylasilmayanlar (makineye ozel):"
         echo "  settings.local.json — Makineye ozel izinler"
-        echo "  zai-provider.json   — Sadece template olarak (token gizlenir)"
         echo "  projects/           — Proje bellekleri (makineye ozel)"
         ;;
 esac

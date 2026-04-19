@@ -41,6 +41,5 @@ approvals/
 
 # Machine-specific - do NOT track
 settings.local.json
-settings.json_zai
 remote-settings.json
 *.local.json
