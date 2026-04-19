@@ -44,8 +44,8 @@ claude-config/
 │   └── claude-sessions.sh           # Aktif Claude session monitoru
 └── skills/
     ├── frontend-design/SKILL.md     # Frontend tasarim skill'i
-    ├── project-auditor/SKILL.md     # Mevcut proje audit skill'i
-    └── project-architect/SKILL.md   # Yeni proje mimari planlama skill'i
+    ├── project-auditor/SKILL.md     # Mevcut proje audit (read-only)
+    └── project-architect/SKILL.md   # Yeni proje mimari planlama
 ```
 
 ## Ne Paylasilir, Ne Paylasilmaz
