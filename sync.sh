@@ -30,6 +30,7 @@ SHARED_FILES=(
     "hooks/rm-guard.sh:hooks/rm-guard.sh"
     "hooks/sandbox-guard.sh:hooks/sandbox-guard.sh"
     "hooks/pre-pr-audit-check.sh:hooks/pre-pr-audit-check.sh"
+    "hooks/session-hook.sh:hooks/session-hook.sh"
     "scripts/telegram-notify.sh:scripts/telegram-notify.sh"
     "scripts/telegram-approval.py:scripts/telegram-approval.py"
     "scripts/claude-sessions.sh:scripts/claude-sessions.sh"

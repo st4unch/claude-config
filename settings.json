@@ -11,7 +11,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cmd=$(jq -r '.tool_input.command // \"\"'); if echo \"$cmd\" | grep -qE 'rm[[:space:]]+-[a-zA-Z]*f|rm[[:space:]]+-rf'; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"Bu komut rm -f veya rm -rf iceriyor ve dosyalari kalici olarak silebilir!\"}}'; fi",
+            "command": "cmd=$(jq -r '.tool_input.command // \"\"'); if echo \"$cmd\" | grep -qE 'rm[[:space:]]+-[a-zA-Z]*f|rm[[:space:]]+-rf'; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"Bu komut rm -f veya rm -rf iceriyor ve dosyalari kalici olarak silebilir! Devam etmek istiyor musunuz?\"}}'; fi",
             "statusMessage": "rm -f komutu kontrol ediliyor..."
           }
         ]
@@ -22,7 +22,29 @@
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/pre-pr-audit-check.sh",
-            "statusMessage": "Checking security audit status..."
+            "statusMessage": "Guvenlik taramasi kontrolu..."
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CLAUDE_HOOK_TYPE=PreToolUse bash ~/.claude/hooks/session-hook.sh",
+            "statusMessage": "Session tracking..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CLAUDE_HOOK_TYPE=PostToolUse bash ~/.claude/hooks/session-hook.sh",
+            "statusMessage": "Session tracking..."
           }
         ]
       }
@@ -37,27 +59,44 @@
           }
         ]
       }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/telegram-notify.sh",
+            "statusMessage": "Telegram bildirimi gonderiliyor..."
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/scripts/telegram-approval.py",
+            "timeout": 130,
+            "statusMessage": "Telegram onay bekleniyor..."
+          }
+        ]
+      }
     ]
   },
   "enabledPlugins": {
-    "swift-lsp@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": false,
     "superpowers@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
+    "context7@claude-plugins-official": false,
     "playwright@claude-plugins-official": true,
-    "code-review@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true,
+    "code-review@claude-plugins-official": false,
+    "coderabbit@claude-plugins-official": false,
+    "telegram@claude-plugins-official": false,
+    "figma@claude-plugins-official": false,
+    "github@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
     "claude-md-management@claude-plugins-official": true,
-    "skill-creator@claude-plugins-official": true,
-    "security-guidance@claude-plugins-official": true,
-    "commit-commands@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true,
-    "supabase@claude-plugins-official": true,
-    "hookify@claude-plugins-official": true,
-    "vercel@claude-plugins-official": true,
-    "playground@claude-plugins-official": true,
-    "learning-output-style@claude-plugins-official": true,
-    "telegram@claude-plugins-official": true
+    "claude-code-setup@claude-plugins-official": true
   },
   "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true
