@@ -17,12 +17,12 @@
         ]
       },
       {
-        "matcher": "Read|Write|Edit|Glob|Grep|Bash",
+        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/sandbox-guard.sh",
-            "statusMessage": "Dizin erisim kontrolu..."
+            "command": "bash ~/.claude/hooks/pre-pr-audit-check.sh",
+            "statusMessage": "Checking security audit status..."
           }
         ]
       }
@@ -37,26 +37,26 @@
           }
         ]
       }
-    ],
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/scripts/telegram-notify.sh",
-            "statusMessage": "Telegram bildirimi gonderiliyor..."
-          }
-        ]
-      }
     ]
   },
   "enabledPlugins": {
+    "swift-lsp@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
     "playwright@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
-    "coderabbit@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "supabase@claude-plugins-official": true,
+    "hookify@claude-plugins-official": true,
+    "vercel@claude-plugins-official": true,
+    "playground@claude-plugins-official": true,
+    "learning-output-style@claude-plugins-official": true,
     "telegram@claude-plugins-official": true
   },
   "effortLevel": "high",

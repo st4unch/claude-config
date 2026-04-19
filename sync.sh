@@ -27,10 +27,15 @@ error() { echo -e "${RED}[ERROR]${NC} $*"; }
 # ─── Shared files manifest ────────────────────────────────────────────
 SHARED_FILES=(
     "CLAUDE.md:CLAUDE.md"
+    "settings.json:settings.json"
     "hooks/rm-guard.sh:hooks/rm-guard.sh"
     "hooks/sandbox-guard.sh:hooks/sandbox-guard.sh"
+    "hooks/pre-pr-audit-check.sh:hooks/pre-pr-audit-check.sh"
     "scripts/telegram-notify.sh:scripts/telegram-notify.sh"
     "scripts/telegram-approval.py:scripts/telegram-approval.py"
+    "scripts/claude-sessions.sh:scripts/claude-sessions.sh"
+    "commands/kickoff.md:commands/kickoff.md"
+    "commands/security-audit.md:commands/security-audit.md"
     "skills/frontend-design/SKILL.md:skills/frontend-design/SKILL.md"
     "skills/project-auditor/SKILL.md:skills/project-auditor/SKILL.md"
     "skills/project-architect/SKILL.md:skills/project-architect/SKILL.md"
@@ -104,6 +109,7 @@ do_pull() {
     info "Pulling shared files from repo to $CLAUDE_DIR ..."
 
     mkdir -p "$CLAUDE_DIR/hooks"
+    mkdir -p "$CLAUDE_DIR/commands"
     mkdir -p "$CLAUDE_DIR/skills/frontend-design"
     mkdir -p "$LOCAL_BIN"
 
@@ -275,8 +281,8 @@ case "${1:-help}" in
         done
         echo ""
         echo "Paylasilmayanlar (makineye ozel):"
-        echo "  settings.json     — Her makinenede farkli (izinler, eklentiler, model)"
-        echo "  zai-provider.json — Sadece template olarak (token gizlenir)"
-        echo "  projects/         — Proje bellekleri (makineye ozel)"
+        echo "  settings.local.json — Makineye ozel izinler"
+        echo "  zai-provider.json   — Sadece template olarak (token gizlenir)"
+        echo "  projects/           — Proje bellekleri (makineye ozel)"
         ;;
 esac
