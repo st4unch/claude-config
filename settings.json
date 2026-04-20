@@ -4,6 +4,7 @@
       "mcp__pencil"
     ]
   },
+  "model": "sonnet",
   "hooks": {
     "PreToolUse": [
       {
@@ -38,6 +39,17 @@
       }
     ],
     "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "A file was just written or edited. Input JSON: $ARGUMENTS\n\nExtract file_path from tool_input. If the file extension is .md, .txt, .json, .yaml, .yml, .toml, .env.example, .gitignore, .lock — return {} immediately, do nothing.\n\nFor source code files (.py, .ts, .js, .tsx, .jsx, .go, .java, .rb, .php, .cs, .swift, .kt, .rs, .sh), scan ONLY for these Critical issues:\n- Hardcoded secrets, API keys, passwords, tokens, private keys\n- SQL injection or command injection risks\n- Authentication bypass (routes/functions missing auth checks)\n- Insecure deserialization\n- Obvious null/undefined dereference that will crash\n\nIf you find ANY Critical issue, return exactly:\n{\"hookSpecificOutput\": {\"hookEventName\": \"PostToolUse\", \"additionalContext\": \"[ISSUE-FINDER] Kritik sorun tespit edildi: <kisa aciklama, dosya:satir>\"}}\n\nIf no critical issues or non-source file, return: {}",
+            "statusMessage": "Issue-finder taraması...",
+            "timeout": 25
+          }
+        ]
+      },
       {
         "matcher": "Bash",
         "hooks": [

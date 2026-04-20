@@ -39,6 +39,8 @@ SHARED_FILES=(
     "skills/frontend-design/SKILL.md:skills/frontend-design/SKILL.md"
     "skills/project-auditor/SKILL.md:skills/project-auditor/SKILL.md"
     "skills/project-architect/SKILL.md:skills/project-architect/SKILL.md"
+    "skills/issue-finder/SKILL.md:skills/issue-finder/SKILL.md"
+    "commands/find-bugs.md:commands/find-bugs.md"
 )
 
 # ─── Setup command ─────────────────────────────────────────────────────
