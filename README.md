@@ -2,6 +2,26 @@
 
 Claude Code yapılandırma dosyaları — hooks, skills, slash komutları ve ayarlar.
 
+## Kurulum
+
+```bash
+# Repoyu klonla
+git clone git@github.com:st4unch/claude-config.git ~/.claude/claude-config
+
+# Dosyaları ~/.claude/ altına kopyala
+cd ~/.claude/claude-config && ./sync.sh pull
+
+# Yeni bir Claude session başlat
+```
+
+## sync.sh
+
+```bash
+./sync.sh pull    # Repodan ~/.claude/ altına indir
+./sync.sh push    # Yerel değişiklikleri repoya gönder
+./sync.sh diff    # Farkları göster
+```
+
 ## Dosya Yapısı
 
 ```
