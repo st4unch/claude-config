@@ -31,7 +31,8 @@ claude-config/
 ├── commands/
 │   ├── kickoff.md                       # /kickoff — yeni proje başlangıç prosedürü
 │   ├── security-audit.md               # /security-audit — 6-agent paralel güvenlik taraması
-│   └── find-bugs.md                    # /find-bugs — kod tabanı bug ve risk taraması
+│   ├── find-bugs.md                    # /find-bugs — kod tabanı bug ve risk taraması
+│   └── project_status.md              # /project_status — git + bağlam bazlı durum raporu
 ├── hooks/
 │   ├── rm-guard.sh                     # rm -f / rm -rf komutlarını onaya sorar
 │   ├── sandbox-guard.sh                # Dizin erişimini sınırlar
@@ -45,7 +46,15 @@ claude-config/
     ├── frontend-design/SKILL.md        # Üretim kaliteli frontend arayüz tasarımı
     ├── project-auditor/SKILL.md        # Mevcut proje production-readiness denetimi
     ├── project-architect/SKILL.md      # Yeni proje uçtan uca mimari tasarımı
-    └── issue-finder/SKILL.md           # Kod tabanında bug, mantık ve güvenlik riski tespiti
+    ├── issue-finder/SKILL.md           # Kod tabanında bug, mantık ve güvenlik riski tespiti
+    └── context-memory/                 # Compact öncesi proje hafızasını kalıcı hale getirir
+        ├── SKILL.md
+        ├── commands/context_memory.md  # /context_memory slash komutu
+        └── scripts/
+            ├── pre_compact_gate.sh     # PreCompact hook — compact öncesi tetiklenir
+            ├── analyze_project.py      # Projeyi tarar, kategori bazlı memory yazar
+            ├── build_memory_subprocess.sh
+            └── extract_transcript_summary.py
 ```
 
 ## Skills
@@ -56,6 +65,17 @@ claude-config/
 | `project-auditor` | "projeyi denetle", "audit et" | Read-only production-readiness raporu |
 | `project-architect` | "mimari planla", "yeni proje" | Uçtan uca teknik mimari tasarlar |
 | `issue-finder` | `/find-bugs`, "bug ara", "hata bul" | Kod tabanını tarar, `/tasks/missing-architectures/` altına dosya yazar |
+| `context-memory` | `/context_memory`, PreCompact hook | Proje bilgisini `.claude/memories/` altında kalıcı tutar; compact sonrası bağlam sıfırlanmaz |
+
+## Commands
+
+| Komut | Ne Yapar |
+|-------|----------|
+| `/kickoff` | Yeni proje klasör yapısını, tasks/, docs/ iskeletini kurar |
+| `/security-audit` | 6 paralel subagent ile kapsamlı güvenlik taraması, `docs/security-audit-report-*.md` üretir |
+| `/find-bugs` | Tüm kod tabanını bug, mantık hatası ve güvenlik riski açısından tarar |
+| `/project_status` | Git geçmişi + açık dosyalar + konuşma bağlamından anlık durum raporu üretir |
+| `/context_memory` | Projeyi analiz edip `.claude/memories/` altına kategori bazlı hafıza dosyaları yazar |
 
 ## Hooks
 
@@ -65,6 +85,29 @@ claude-config/
 | `sandbox-guard.sh` | PreToolUse (Bash) | İzin verilmeyen dizinlere erişimi engeller |
 | `pre-pr-audit-check.sh` | PreToolUse (Bash) | `gh pr create` / `git push` öncesi 7 günlük audit raporu kontrolü |
 | issue-finder prompt hook | PostToolUse (Write\|Edit) | Kaynak kod yazıldığında kritik güvenlik sorunlarını anında işaretler |
+| `pre_compact_gate.sh` | PreCompact | Auto-compact başlamadan önce oturum bilgilerini memory'ye kaydeder |
+| `session-hook.sh` | PreToolUse + PostToolUse | Oturum aktivitesini takip eder |
+
+## Aktif Plugin'ler
+
+| Plugin | Durum | Ne Sağlar |
+|--------|-------|-----------|
+| `superpowers` | ✅ aktif | Skill sistemi, brainstorm, plan, TDD workflow'ları |
+| `playwright` | ✅ aktif | Browser otomasyon skill'leri |
+| `code-simplifier` | ✅ aktif | Yazılan kodu sadeleştirme ve kalite kontrolü |
+| `claude-md-management` | ✅ aktif | CLAUDE.md oluşturma ve iyileştirme skill'leri |
+| `claude-code-setup` | ✅ aktif | Otomasyon önerileri ve kurulum skill'leri |
+| `context-mode` | ✅ aktif | Context window koruması; büyük çıktıları sandbox'a yönlendirir |
+
+## settings.json — Önemli Ayarlar
+
+| Ayar | Değer | Açıklama |
+|------|-------|----------|
+| `effortLevel` | `"high"` | Maksimum düşünme kapasitesi |
+| `permissions.defaultMode` | `"auto"` | Güvenli araçları otomatik onaylar |
+| `skipAutoPermissionPrompt` | `true` | Tekrarlayan izin popup'larını kaldırır |
+| `remoteControlAtStartup` | `true` | Remote agent (Telegram) desteği |
+| `agentPushNotifEnabled` | `true` | Agent tamamlandığında push bildirimi |
 
 ## Telegram Entegrasyonu
 
