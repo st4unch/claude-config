@@ -6,7 +6,7 @@ Claude Code yapılandırma dosyaları — hooks, skills, slash komutları ve aya
 
 ```bash
 # Repoyu klonla
-git clone git@github.com:st4unch/claude-config.git ~/.claude/claude-config
+git clone https://github.com/st4unch/claude-config.git  ~/.claude/claude-config
 
 # Dosyaları ~/.claude/ altına kopyala
 cd ~/.claude/claude-config && ./sync.sh pull
