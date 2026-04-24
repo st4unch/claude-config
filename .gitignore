@@ -43,3 +43,4 @@ approvals/
 settings.local.json
 remote-settings.json
 *.local.json
+.DS_Store

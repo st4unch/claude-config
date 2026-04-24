@@ -1,0 +1,19 @@
+{
+  "_comment_1": "Bu dosyanın 'hooks' bloğunu .claude/settings.json'unuzun içine merge edin.",
+  "_comment_2": "Hook auto-compact'tan önce çalışır. Taze memory yoksa compact'ı engelleyip Claude'a memory oluşturma/güncelleme talimatı verir.",
+  "_comment_3": "Ek olarak, .claude/commands/context_memory.md'deki slash komutu manuel /context_memory tetiklemesini sağlar. Hook ve slash komutu birlikte çalışır.",
+
+  "hooks": {
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/skills/context-memory/scripts/pre_compact_gate.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
